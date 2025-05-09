@@ -1,0 +1,20 @@
+service: connecting-the-dots
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+
+functions:
+  app:
+    handler: app.app
+    events:
+      - http:
+          path: /
+          method: GET
+      - http:
+          path: contact
+          method: GET
+      - http:
+          path: submit_contact
+          method: POST
