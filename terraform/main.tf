@@ -26,20 +26,6 @@ resource "aws_s3_bucket_website_configuration" "ctdc_site_config" {
   }
 }
 
-data "aws_iam_policy_document" "public_read" {
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.ctdc-s3-bucket.arn}/*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-
-    effect = "Allow"
-  }
-}
-
 resource "aws_s3_bucket_public_access_block" "disable_block_public" {
   bucket = aws_s3_bucket.ctdc-s3-bucket.id
 
@@ -47,13 +33,6 @@ resource "aws_s3_bucket_public_access_block" "disable_block_public" {
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_policy" "public_access" {
-  bucket = aws_s3_bucket.ctdc-s3-bucket.id
-  policy = data.aws_iam_policy_document.public_read.json
-
-  depends_on = [aws_s3_bucket_public_access_block.disable_block_public]
 }
 
 resource "aws_dynamodb_table" "ctdc-dynamodb" {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Connecting The Dots Corporation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline id="background-video">
+    <source src="videos/body-background.mp4" type="video/mp4">
+  </video>
+
+  <div class="video-overlay"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-left">
+      <img src="images/CTDC.png" alt="CTD Logo" class="logo">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="nav-right" id="user-info" style="display:none;"></div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <h1>User Dashboard</h1>
+    <p class="centered-text">Track your training progress, view submitted data, and stay up to date with your sustainability goals.</p>
+    <div class="centered-text white-text dashboard-box">
+      <p><strong>Training Modules Completed:</strong> 3</p>
+      <p><strong>Next Suggested Course:</strong> Sustainable Business Practices</p>
+    </div>    
+  </main>
+
+  <script>
+    document.getElementById('user-info').style.display = 'none';
+  </script>
+
+</body>
+</html>

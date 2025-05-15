@@ -12,6 +12,7 @@ variable "region" {
 variable "acm_cert_arn" {
   description = "ARN of the ACM certificate in us-east-1"
   type        = string
+  default     = "arn:aws:acm:us-east-1:533267010082:certificate/dc84bcfa-959a-4e8a-ad88-c357e7e2e148"
 }
 
 variable "route53_zone_id" {

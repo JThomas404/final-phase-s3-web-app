@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Connecting The Dots Corporation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline id="background-video">
+    <source src="videos/body-background.mp4" type="video/mp4">
+  </video>
+
+  <div class="video-overlay"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-left">
+      <img src="images/CTDC.png" alt="CTD Logo" class="logo">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="nav-right" id="user-info" style="display:none;">
+      <span id="user-name"></span>
+      <img id="user-picture" src="" alt="Profile Picture" class="profile-pic">
+      <button id="auth-button"></button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <h1>User Dashboard</h1>
+    <p class="centered-text">Track your training progress, view submitted data, and stay up to date with your sustainability goals.</p>
+
+    <div class="centered-text white-text">
+      <p><strong>Training Modules Completed:</strong> 3</p>
+      <p><strong>Next Suggested Course:</strong> Sustainable Business Practices</p>
+    </div>
+  </main>
+
+  <script>
+    const userInfo = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userPicture = document.getElementById('user-picture');
+    const authButton = document.getElementById('auth-button');
+
+    function updateUI() {
+      const idToken = localStorage.getItem('id_token');
+
+      if (idToken) {
+        const payload = JSON.parse(atob(idToken.split('.')[1]));
+        userName.textContent = payload.name || 'User';
+        userPicture.src = payload.picture || 'images/default-profile.png';
+        userPicture.style.display = 'block';
+        authButton.textContent = 'Logout';
+        authButton.onclick = logout;
+        userInfo.style.display = 'flex';
+      } else {
+        userName.textContent = '';
+        userPicture.style.display = 'none';
+        authButton.textContent = 'Sign In';
+        authButton.onclick = login;
+        userInfo.style.display = 'flex';
+      }
+    }
+
+    function login() {
+      const clientId = '6bjca1d6b150dohsmob5uqp6sv';
+      const redirectUri = 'https://www.connectingthedotscorp.com/dashboard.html';
+      const loginUrl = `https://auth.connectingthedotscorp.com/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+      window.location.href = loginUrl;
+    }
+
+    function logout() {
+      localStorage.removeItem('id_token');
+      localStorage.removeItem('access_token');
+      const clientId = '6bjca1d6b150dohsmob5uqp6sv';
+      const logoutUrl = `https://auth.connectingthedotscorp.com/logout?client_id=${clientId}&logout_uri=https://www.connectingthedotscorp.com`;
+      window.location.href = logoutUrl;
+    }
+
+    window.addEventListener('load', updateUI);
+  </script>
+
+</body>
+</html>

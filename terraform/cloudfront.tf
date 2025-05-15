@@ -43,31 +43,8 @@ resource "aws_cloudfront_distribution" "ctdc-distribution" {
     Name = var.project_tag
   }
 
-  depends_on = [
-    aws_cloudfront_origin_access_control.ctdc-oac
-  ]
+  depends_on = [aws_cloudfront_origin_access_control.ctdc-oac]
 }
-
-## Redirect S3 Bucket for Root Domain (connectingthedotscorp.com)
-
-resource "aws_s3_bucket" "ctdc-root-redirect" {
-  bucket = "connectingthedotscorp.com"
-
-  tags = {
-    Name = var.project_tag
-  }
-}
-
-resource "aws_s3_bucket_website_configuration" "ctdc-root-redirect-config" {
-  bucket = aws_s3_bucket.ctdc-root-redirect.id
-
-  redirect_all_requests_to {
-    host_name = "www.connectingthedotscorp.com"
-    protocol  = "https"
-  }
-}
-
-## CloudFront Distribution for Root Redirect Bucket
 
 resource "aws_cloudfront_distribution" "ctdc-redirect-distribution" {
   aliases             = ["connectingthedotscorp.com"]
@@ -78,6 +55,7 @@ resource "aws_cloudfront_distribution" "ctdc-redirect-distribution" {
   origin {
     domain_name = "${aws_s3_bucket.ctdc-root-redirect.bucket}.s3-website.${var.region}.amazonaws.com"
     origin_id   = "ctdc-root-redirect-origin"
+
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -91,9 +69,8 @@ resource "aws_cloudfront_distribution" "ctdc-redirect-distribution" {
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "ctdc-root-redirect-origin"
     viewer_protocol_policy = "redirect-to-https"
-
-    compress        = true
-    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    compress               = true
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
   }
 
   viewer_certificate {
@@ -112,3 +89,52 @@ resource "aws_cloudfront_distribution" "ctdc-redirect-distribution" {
     Name = var.project_tag
   }
 }
+
+resource "aws_s3_bucket" "ctdc-root-redirect" {
+  bucket = "connectingthedotscorp.com"
+
+  tags = {
+    Name = var.project_tag
+  }
+}
+
+resource "aws_s3_bucket_website_configuration" "ctdc-root-redirect-config" {
+  bucket = aws_s3_bucket.ctdc-root-redirect.id
+
+  redirect_all_requests_to {
+    host_name = "www.connectingthedotscorp.com"
+    protocol  = "https"
+  }
+}
+
+data "aws_iam_policy_document" "ctdc-cloudfront-oac" {
+  statement {
+    sid    = "AllowCloudFrontAccess"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.ctdc-s3-bucket.arn}/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudfront::533267010082:distribution/${aws_cloudfront_distribution.ctdc-distribution.id}"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "ctdc-oac-access" {
+  bucket = aws_s3_bucket.ctdc-s3-bucket.id
+  policy = data.aws_iam_policy_document.ctdc-cloudfront-oac.json
+
+  depends_on = [
+    aws_s3_bucket.ctdc-s3-bucket,
+    random_id.ctdc-random-number
+  ]
+}
+

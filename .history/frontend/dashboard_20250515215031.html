@@ -1,0 +1,28 @@
+<script>
+  const userInfo = document.getElementById('user-info');
+  const userName = document.getElementById('user-name');
+  const userPicture = document.getElementById('user-picture');
+  const authButton = document.getElementById('auth-button');
+
+  function updateUI() {
+    // Temporarily hide Sign In / Logout section
+    userInfo.style.display = 'none';
+  }
+
+  function login() {
+    const clientId = '6bjca1d6b150dohsmob5uqp6sv';
+    const redirectUri = 'https://www.connectingthedotscorp.com/dashboard.html';
+    const loginUrl = `https://auth.connectingthedotscorp.com/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+    window.location.href = loginUrl;
+  }
+
+  function logout() {
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('access_token');
+    const clientId = '6bjca1d6b150dohsmob5uqp6sv';
+    const logoutUrl = `https://auth.connectingthedotscorp.com/logout?client_id=${clientId}&logout_uri=https://www.connectingthedotscorp.com`;
+    window.location.href = logoutUrl;
+  }
+
+  window.addEventListener('load', updateUI);
+</script>
