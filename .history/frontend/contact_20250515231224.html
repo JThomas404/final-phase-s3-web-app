@@ -86,12 +86,13 @@
       window.location.href = logoutUrl;
     }
   
+    // On window load
     window.addEventListener('load', () => {
       updateUI();
       document.body.classList.remove('loading');
     });
   
-    // Contact Form Submission
+    // Contact Form Submission (Only if this is contact.html)
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
       contactForm.addEventListener('submit', async function(event) {
