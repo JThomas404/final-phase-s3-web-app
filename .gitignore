@@ -1,0 +1,11 @@
+.terraform/
+.serverless/
+*.tfstate
+*.tfstate.backup
+*.zip
+*.log
+.cache/
+.vscode/
+.venv/
+__pycache__/
+node_modules/
