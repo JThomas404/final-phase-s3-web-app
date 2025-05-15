@@ -20,3 +20,14 @@ node_modules/
 .venv/
 __pycache__/
 node_modules/
+.terraform/
+.serverless/
+*.tfstate
+*.tfstate.backup
+*.zip
+*.log
+.cache/
+.vscode/
+.venv/
+__pycache__/
+node_modules/
