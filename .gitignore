@@ -9,3 +9,7 @@
 .venv/
 __pycache__/
 node_modules/terraform/terraform.tfvars
+
+# Ignore large Terraform provider binaries
+terraform/.terraform/
+terraform/.terraform/providers/
